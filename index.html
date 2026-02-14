@@ -91,7 +91,6 @@
     button.main:hover{ filter:brightness(1.06); transform:translateY(-1px); }
     button.main:active{ transform:translateY(1px); }
 
-    /* Slider 9:16 */
     .slider{
       margin:22px auto 0;
       position:relative;
@@ -148,7 +147,6 @@
     .prev{ left:10px; }
     .next{ right:10px; }
 
-    /* Story */
     .story{
       position:fixed;
       inset:0;
@@ -197,6 +195,22 @@
       user-select:none;
       z-index:10000;
       animation:pulse 1.2s infinite;
+    }
+
+    .music-btn{
+      position:fixed;
+      bottom:18px;
+      left:18px;
+      z-index:10001;
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
+      background:rgba(0,0,0,.55);
+      color:#fff;
+      cursor:pointer;
+      backdrop-filter:blur(4px);
+      font-size:.92rem;
+      box-shadow:0 6px 18px rgba(0,0,0,.3);
     }
 
     @keyframes pulse{
@@ -253,6 +267,7 @@
     @media (max-width:520px){
       .card{ padding:24px 16px; border-radius:18px; }
       .nav{ width:34px; height:34px; font-size:20px; }
+      .music-btn{ font-size:.86rem; padding:9px 12px; }
     }
   </style>
 </head>
@@ -267,7 +282,6 @@
 
     <div class="slider" id="slider">
       <div class="slides" id="slides">
-        <!-- HANYA 2 FOTO DI SLIDE -->
         <img src="sel1.jpeg" alt="Foto 1">
         <img src="sel2.jpeg" alt="Foto 2">
       </div>
@@ -277,7 +291,6 @@
     </div>
   </div>
 
-  <!-- sel3 KHUSUS STORY PAGE -->
   <div class="story" id="story">
     <div class="story-content">
       <img src="sel3.jpeg" alt="Foto favorit">
@@ -287,9 +300,11 @@
     <div class="love-btn" id="closeStory" onclick="closeStory()">❤️</div>
   </div>
 
-  <audio id="music" loop>
-    <source src="lanyy" type="audio/mpeg">
+  <audio id="music" loop preload="auto">
+    <source src="lanyy.mp3" type="audio/mpeg">
   </audio>
+
+  <button class="music-btn" id="musicToggle" type="button">🎵 Play Music</button>
 
   <script>
     const btnReveal = document.getElementById('btnReveal');
@@ -299,6 +314,7 @@
     const nextBtn = document.getElementById('nextBtn');
     const story = document.getElementById('story');
     const music = document.getElementById('music');
+    const musicToggle = document.getElementById('musicToggle');
 
     let index = 0;
     let autoId = null;
@@ -346,6 +362,17 @@
       if(revealed) startAuto();
     }
 
+    async function playMusicSafe(){
+      try{
+        music.muted = false;
+        music.volume = 1;
+        await music.play();
+        musicToggle.textContent = "⏸ Pause Music";
+      }catch(e){
+        musicToggle.textContent = "🎵 Play Music";
+      }
+    }
+
     function flowerBurst(){
       const icons = ["🌸","🌺","🌷","💐"];
       let count = 0;
@@ -371,7 +398,6 @@
     }
     setInterval(createHeart, 320);
 
-    // klik 1x: buka slider | klik lagi: langsung ke story
     function handleMainButtonClick(){
       if(!revealed){
         revealed = true;
@@ -379,19 +405,29 @@
         updateSlide();
         startAuto();
         flowerBurst();
-        music.play().catch(()=>{});
+        playMusicSafe();
         btnReveal.textContent = "Lanjut 💗";
-      } else {
+      }else{
         openStory();
       }
     }
 
-    window.handleMainButtonClick = handleMainButtonClick;
-    window.closeStory = closeStory;
+    musicToggle.addEventListener('click', async () => {
+      if(music.paused){
+        await playMusicSafe();
+      }else{
+        music.pause();
+        musicToggle.textContent = "🎵 Play Music";
+      }
+    });
 
+    // nav
     if(prevBtn) prevBtn.addEventListener('click', () => moveSlide(-1));
     if(nextBtn) nextBtn.addEventListener('click', () => moveSlide(1));
+
+    // expose global untuk inline onclick
+    window.handleMainButtonClick = handleMainButtonClick;
+    window.closeStory = closeStory;
   </script>
 </body>
 </html>
-
