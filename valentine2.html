@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Valentine</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Segoe UI',sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:#000;
+      overflow:hidden;
+      padding:20px;
+      position:relative;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:linear-gradient(180deg,#000000cc,#000000aa);
+      z-index:0;
+      pointer-events:none;
+    }
+
+    .card{
+      background:#0e0f14;
+      color:#fff;
+      padding:32px 24px;
+      border-radius:22px;
+      text-align:center;
+      box-shadow:
+        0 0 45px rgba(255, 40, 90, .22),
+        inset 0 0 0 1px rgba(255,255,255,.03);
+      position:relative;
+      z-index:20;
+      width:100%;
+      max-width:900px;
+      animation:pop .75s ease;
+    }
+
+    @keyframes pop{
+      from{transform:scale(.96);opacity:0}
+      to{transform:scale(1);opacity:1}
+    }
+
+    h1{
+      color:#ff4d7a;
+      margin-bottom:12px;
+      font-size:clamp(1.8rem, 4vw, 2.6rem);
+      font-weight:800;
+      letter-spacing:.3px;
+    }
+
+    p{
+      color:#d8d8df;
+      margin-bottom:10px;
+      font-size:clamp(1rem, 2.3vw, 1.1rem);
+    }
+
+    button.main{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin:18px auto 0;
+      padding:12px 26px;
+      min-height:46px;
+      border:none;
+      border-radius:999px;
+      background:#ff4d6d;
+      color:#fff;
+      font-size:1rem;
+      font-weight:700;
+      line-height:1;
+      cursor:pointer;
+      position:relative;
+      z-index:999;
+      box-shadow:0 8px 22px rgba(255,77,109,.35);
+      transition:.2s ease;
+    }
+    button.main:hover{ filter:brightness(1.06); transform:translateY(-1px); }
+    button.main:active{ transform:translateY(1px); }
+
+    /* Slider 9:16 */
+    .slider{
+      margin:22px auto 0;
+      position:relative;
+      width:min(92vw, 420px);
+      aspect-ratio:9/16;
+      overflow:hidden;
+      border-radius:16px;
+      display:none;
+      background:#000;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+      z-index:30;
+    }
+    .slider.show{ display:block; }
+
+    .slides{
+      display:flex;
+      width:100%;
+      height:100%;
+      transition:transform .55s ease;
+      will-change:transform;
+    }
+
+    .slides img{
+      width:100%;
+      height:100%;
+      flex:0 0 100%;
+      object-fit:cover;
+      filter:brightness(.88);
+      user-select:none;
+      pointer-events:none;
+    }
+
+    .nav{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:38px;
+      height:38px;
+      border:none;
+      border-radius:50%;
+      background:rgba(0,0,0,.5);
+      color:#fff;
+      font-size:22px;
+      line-height:1;
+      cursor:pointer;
+      z-index:40;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:.2s ease;
+      backdrop-filter:blur(2px);
+    }
+    .nav:hover{ background:rgba(0,0,0,.68); }
+    .prev{ left:10px; }
+    .next{ right:10px; }
+
+    /* Story */
+    .story{
+      position:fixed;
+      inset:0;
+      background:#000;
+      display:none;
+      justify-content:center;
+      align-items:center;
+      z-index:9999;
+      padding:20px;
+    }
+
+    .story-content{
+      width:100%;
+      max-width:460px;
+      text-align:center;
+      color:#fff;
+      animation:fade .5s ease;
+    }
+
+    .story img{
+      width:100%;
+      aspect-ratio:9/16;
+      object-fit:cover;
+      border-radius:16px;
+      margin-bottom:14px;
+      filter:brightness(.9);
+    }
+
+    .story h2{
+      font-size:1.45rem;
+      margin-bottom:8px;
+      color:#ff7a9c;
+    }
+
+    .story p{
+      color:#ddd;
+      line-height:1.55;
+    }
+
+    .love-btn{
+      position:absolute;
+      bottom:20px;
+      right:22px;
+      font-size:36px;
+      cursor:pointer;
+      user-select:none;
+      z-index:10000;
+      animation:pulse 1.2s infinite;
+    }
+
+    @keyframes pulse{
+      0%{transform:scale(1)}
+      50%{transform:scale(1.15)}
+      100%{transform:scale(1)}
+    }
+
+    @keyframes fade{
+      from{opacity:0; transform:translateY(14px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    .heart{
+      position:fixed;
+      width:18px;
+      height:18px;
+      background:#ff4d6d;
+      transform:rotate(45deg);
+      animation:float 6s linear forwards;
+      opacity:.7;
+      z-index:1;
+      pointer-events:none;
+    }
+    .heart::before,.heart::after{
+      content:"";
+      width:18px;
+      height:18px;
+      background:#ff4d6d;
+      border-radius:50%;
+      position:absolute;
+    }
+    .heart::before{ top:-9px; }
+    .heart::after{ left:-9px; }
+
+    @keyframes float{
+      from{ transform:translateY(0) rotate(45deg); opacity:.75; }
+      to{ transform:translateY(-105vh) rotate(45deg); opacity:0; }
+    }
+
+    .flower{
+      position:fixed;
+      font-size:24px;
+      z-index:1;
+      animation:flowerFall 5s linear forwards;
+      pointer-events:none;
+    }
+
+    @keyframes flowerFall{
+      from{ transform:translateY(-10vh); opacity:1; }
+      to{ transform:translateY(110vh) rotate(360deg); opacity:0; }
+    }
+
+    @media (max-width:520px){
+      .card{ padding:24px 16px; border-radius:18px; }
+      .nav{ width:34px; height:34px; font-size:20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>💗 Happy Valentine 💗</h1>
+    <p>Dulu kamu pernah bikin hariku lebih indah.</p>
+    <p>Terima kasih untuk semua kenangan yang pernah ada 🤍</p>
+
+    <button class="main" id="btnReveal" type="button" onclick="handleMainButtonClick()">Klik Aku 💌</button>
+
+    <div class="slider" id="slider">
+      <div class="slides" id="slides">
+        <!-- HANYA 2 FOTO DI SLIDE -->
+        <img src="sel1.jpeg" alt="Foto 1">
+        <img src="sel2.jpeg" alt="Foto 2">
+      </div>
+
+      <button class="nav prev" id="prevBtn" type="button" aria-label="Sebelumnya">‹</button>
+      <button class="nav next" id="nextBtn" type="button" aria-label="Berikutnya">›</button>
+    </div>
+  </div>
+
+  <!-- sel3 KHUSUS STORY PAGE -->
+  <div class="story" id="story">
+    <div class="story-content">
+      <img src="sel3.jpeg" alt="Foto favorit">
+      <h2>Foto yang paling akuu sukaa</h2>
+      <p>Setiap foto punya cerita… dan yang ini selalu ngingetin aku kalau aku masih sayang kamu ❤️</p>
+    </div>
+    <div class="love-btn" id="closeStory" onclick="closeStory()">❤️</div>
+  </div>
+
+  <audio id="music" loop>
+    <source src="valentine.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const btnReveal = document.getElementById('btnReveal');
+    const slider = document.getElementById('slider');
+    const slidesWrap = document.getElementById('slides');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const story = document.getElementById('story');
+    const music = document.getElementById('music');
+
+    let index = 0;
+    let autoId = null;
+    let revealed = false;
+
+    function totalSlides(){
+      return slidesWrap ? slidesWrap.children.length : 0;
+    }
+
+    function updateSlide(){
+      if(!slidesWrap) return;
+      slidesWrap.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    function moveSlide(step, fromAuto = false){
+      if(!revealed || !slidesWrap) return;
+      const total = totalSlides();
+      if(!total) return;
+
+      index = (index + step + total) % total;
+      updateSlide();
+
+      if(!fromAuto) startAuto();
+    }
+
+    function stopAuto(){
+      if(autoId){
+        clearInterval(autoId);
+        autoId = null;
+      }
+    }
+
+    function startAuto(){
+      stopAuto();
+      autoId = setInterval(() => moveSlide(1, true), 5000);
+    }
+
+    function openStory(){
+      story.style.display = 'flex';
+      stopAuto();
+    }
+
+    function closeStory(){
+      story.style.display = 'none';
+      if(revealed) startAuto();
+    }
+
+    function flowerBurst(){
+      const icons = ["🌸","🌺","🌷","💐"];
+      let count = 0;
+      const fx = setInterval(() => {
+        const f = document.createElement('div');
+        f.className = 'flower';
+        f.textContent = icons[Math.floor(Math.random() * icons.length)];
+        f.style.left = Math.random() * 100 + 'vw';
+        document.body.appendChild(f);
+        setTimeout(() => f.remove(), 5000);
+        count++;
+        if(count > 25) clearInterval(fx);
+      }, 120);
+    }
+
+    function createHeart(){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.style.left = Math.random() * 100 + 'vw';
+      h.style.bottom = '-24px';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 6000);
+    }
+    setInterval(createHeart, 320);
+
+    // klik 1x: buka slider | klik lagi: langsung ke story
+    function handleMainButtonClick(){
+      if(!revealed){
+        revealed = true;
+        slider.classList.add('show');
+        updateSlide();
+        startAuto();
+        flowerBurst();
+        music.play().catch(()=>{});
+        btnReveal.textContent = "Lanjut 💗";
+      } else {
+        openStory();
+      }
+    }
+
+    window.handleMainButtonClick = handleMainButtonClick;
+    window.closeStory = closeStory;
+
+    if(prevBtn) prevBtn.addEventListener('click', () => moveSlide(-1));
+    if(nextBtn) nextBtn.addEventListener('click', () => moveSlide(1));
+  </script>
+</body>
+</html>
